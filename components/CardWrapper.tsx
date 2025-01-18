@@ -6,6 +6,7 @@ interface CardWrapperProps {
   backButtonLabel: string;
   backButtonHref: string;
   showSocial?: boolean;
+  register?: boolean;
 }
 
 const CardWrapper: React.FC<CardWrapperProps> = ({
@@ -14,6 +15,7 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
   backButtonLabel,
   backButtonHref,
   showSocial = false,
+  register,
 }) => {
   return (
     <div className="bg-white shadow-md rounded-md p-8 max-w-md w-full">
@@ -32,7 +34,7 @@ const CardWrapper: React.FC<CardWrapperProps> = ({
       <p className="text-sm text-center mt-4">
         {backButtonLabel}{" "}
         <a href={backButtonHref} className="text-blue-600">
-          Register
+          {register ? "Login" : "Register"}
         </a>
       </p>
     </div>

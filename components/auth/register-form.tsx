@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, LoginFormValues } from "@/schemas";
+import { RegisterSchema, RegisterFormValues } from "@/schemas";
 import CardWrapper from "@/components/CardWrapper";
 import { FormError } from "@/components/FormError";
-import { loginAc } from "@/actions/login";
+import { registerAc } from "@/actions/register";
 import { useState, useTransition } from "react";
 import { FormSuccess } from "../FormSuccess";
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -15,17 +15,17 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: { email: "", password: "" },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: { email: "", password: "", name: "" },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = (data: RegisterFormValues) => {
     setError("");
     setSuccess("");
 
     startTransition(() => {
-      loginAc(data).then((data) => {
+      registerAc(data).then((data) => {
         setError(data.error);
         setSuccess(data.success);
       });
@@ -34,12 +34,26 @@ const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
+      headerLabel="Create an account"
+      backButtonLabel="Already have an account?"
+      backButtonHref="/auth/login"
       showSocial
+      register
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4">
+          <label className="block text-sm mb-1">Name</label>
+          <input
+            {...register("name")}
+            disabled={isPending}
+            className="w-full px-4 py-2 border rounded"
+            placeholder="Jhon doe"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
+        </div>
+
         <div className="mb-4">
           <label className="block text-sm mb-1">Email</label>
           <input
@@ -74,11 +88,11 @@ const LoginForm = () => {
           disabled={isPending}
           className="w-full bg-blue-600 text-white py-2 rounded"
         >
-          Login
+          Create an account
         </button>
       </form>
     </CardWrapper>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
